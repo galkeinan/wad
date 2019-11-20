@@ -20,15 +20,12 @@ callback_websocket_wa_event(struct lws *wsi, enum lws_callback_reasons reason, v
             puts("connection established\n");
             break;
         case LWS_CALLBACK_RECEIVE: {
-            size_t buf_size = LWS_SEND_BUFFER_PRE_PADDING + len + LWS_SEND_BUFFER_POST_PADDING;
-            unsigned char *buf = (unsigned char *) malloc(buf_size);
             char* substr = malloc(len);
-            int comma_idx = 15;
-            strncpy(substr,  ((char *) in) + comma_idx, len - comma_idx);
-            printf("<< \n[%ld] %s\n", len, substr);
+            strncpy(substr,  (char *) in, len);
+            printf("[%ld] %s\n", len, substr);
             // TODO handle_event; filter & save event into DB
             // lws_write(wsi, &buf[LWS_SEND_BUFFER_PRE_PADDING], len, LWS_WRITE_TEXT);
-            free(buf);
+            free(substr);
             break;
         }
         default:
