@@ -8,8 +8,7 @@ RUN echo "deb http://ftp.debian.org/debian stretch-backports main" > /etc/apt/so
 
 RUN apt-get update
 RUN apt-get upgrade
-RUN apt-get install -y vim gcc cmake git libssl-dev libev-dev pkg-config systemd-sysv zlib1g-dev libsqlite3-dev
-RUN apt-get -t stretch-backports install libuv1-dev
+RUN apt-get install -y build-essential vim gcc make cmake git libssl-dev libev-dev pkg-config systemd-sysv zlib1g-dev libsqlite3-dev libuv1-dev
 
 RUN mkdir -p /usr/local/src
 WORKDIR /usr/local/src/
@@ -18,17 +17,10 @@ WORKDIR /usr/local/src/libwebsockets
 RUN mkdir build
 WORKDIR /usr/local/src/libwebsockets/build
 
-RUN cmake .. -DLWS_WITH_LWSWS=1 -DLWS_WITH_GENERIC_SESSIONS=1
-RUN make && make install
-# install libs in /usr/local/lib ; configured in /etc/ld.so.conf.d/libc.conf
-# ENV LD_LIBRARY_PATH /usr/local/lib:${LD_LIBRARY_PATH}
-RUN ldconfig -v 
+RUN cmake .. && make && make install && ldconfig -v
 
 WORKDIR /usr/local/src
-ADD main.c .
-RUN gcc main.c -L/usr/local/lib -lwebsockets -o wad
-
-# Run webserver when the container launches
-# git clone git@galk:wad
-# TODO CMD ["git pull && make && ./wad", ""]
-CMD ["./wad", ""]
+RUN git clone https://github.com/galkeinan/wad.git
+WORKDIR /usr/local/src/wad
+RUN git pull
+ENTRYPOINT make build run
