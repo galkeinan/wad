@@ -62,7 +62,7 @@ int main(void) {
     }
 
     struct lws_context_creation_info context_info = {
-        .port = port, .iface = NULL, .protocols = protocols, .extensions = NULL,
+        .port = 9000, .iface = NULL, .protocols = protocols, .extensions = NULL,
         .ssl_cert_filepath = NULL, .ssl_private_key_filepath = NULL, .ssl_ca_filepath = NULL,
         .gid = -1, .uid = -1, .options = 0, NULL, .ka_time = 0, .ka_probes = 0, .ka_interval = 0
     };
